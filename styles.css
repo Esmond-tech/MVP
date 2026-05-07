@@ -88,7 +88,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
 .btn-call { background:#3b82f6; color:white; }
 .btn-call:hover { background:#2563eb; }
 
-.room-img { width:100%; height:160px; object-fit:cover; background:#e2e8f0; }
+
 
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(100px); background:#1e293b; color:white; padding:14px 24px; border-radius:var(--radius-sm); font-size:.9rem; font-weight:500; box-shadow:var(--shadow-lg); z-index:2000; transition:transform .35s cubic-bezier(.32,.72,0,1); display:flex; align-items:center; gap:8px; }
 .toast.show { transform:translateX(-50%) translateY(0); }
