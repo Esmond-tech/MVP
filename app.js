@@ -82,10 +82,9 @@ function renderRooms() {
 
   grid.innerHTML = filtered.map((room, i) => `
     <div class="room-card fade-in" style="animation-delay:${i * 0.06}s" onclick="openModal('${room.roomNumber}')">
-      <img src="${room.image}" alt="Room ${room.roomNumber}" class="room-img" onerror="this.src='https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'">
       <div class="p-4">
         <div class="flex items-center justify-between mb-2">
-          <h3 class="font-bold text-lg text-gray-900">Room ${room.roomNumber}</h3>
+          <h3 class="font-bold text-lg text-gray-900">${formatRoomTitle(room.roomNumber)}</h3>
           <span class="badge badge-${room.status}">${room.status}</span>
         </div>
         <p class="text-sm text-gray-500 mb-1">${room.type}</p>
@@ -104,12 +103,11 @@ function openModal(roomNumber) {
   const body = document.getElementById('modalBody');
 
   body.innerHTML = `
-    <img src="${room.image}" alt="Room ${room.roomNumber}" class="w-full h-48 sm:h-56 object-cover" onerror="this.src='https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'">
     <div class="p-5 space-y-5">
       <!-- Header -->
       <div class="flex items-start justify-between">
         <div>
-          <h2 class="text-xl font-bold text-gray-900">Room ${room.roomNumber}</h2>
+          <h2 class="text-xl font-bold text-gray-900">${formatRoomTitle(room.roomNumber)}</h2>
           <p class="text-sm text-gray-500">${room.type}</p>
         </div>
         <span class="badge badge-${room.status}">${room.status}</span>
@@ -185,7 +183,7 @@ function saveEdits(roomNumber) {
   renderStats();
   renderRooms();
   closeModal();
-  showToast('✅ Room ' + roomNumber + ' updated successfully');
+  showToast('✅ ' + formatRoomTitle(roomNumber) + ' updated successfully');
 }
 
 function changeStatus(roomNumber, status) {
@@ -193,7 +191,7 @@ function changeStatus(roomNumber, status) {
   renderStats();
   renderRooms();
   closeModal();
-  showToast(`✅ Room ${roomNumber} marked as ${status}`);
+  showToast(`✅ ${formatRoomTitle(roomNumber)} marked as ${status}`);
 }
 
 // ---- TOAST ----
@@ -224,7 +222,7 @@ function downloadQR() {
   const canvas = document.querySelector('#qrCode canvas');
   if (!canvas) { showToast('⚠️ QR code not ready'); return; }
   const link = document.createElement('a');
-  link.download = 'greenview-qr.png';
+  link.download = 'dans-rentals-qr.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
   showToast('📥 QR code downloaded');
