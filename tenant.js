@@ -40,20 +40,19 @@ function searchRoom() {
 
 // ---- Build Room Card ----
 function buildRoomCard(room, isSearch) {
-  const whatsappMsg = encodeURIComponent(`Hello, I'm interested in Room ${room.roomNumber} (${room.type}) at GreenView Apartments. Is it still ${room.status}?`);
+  const whatsappMsg = encodeURIComponent(`Hello, I'm interested in Room ${room.roomNumber} (${room.type}) at Dan's Rentals. Is it still ${room.status}?`);
   const whatsappUrl = `https://wa.me/${LANDLORD_PHONE}?text=${whatsappMsg}`;
   const callUrl = `tel:+${LANDLORD_PHONE}`;
-  const viewingMsg = encodeURIComponent(`Hi, I would like to schedule a viewing for Room ${room.roomNumber} (${room.type}) at GreenView Apartments. Please let me know available times.`);
+  const viewingMsg = encodeURIComponent(`Hi, I would like to schedule a viewing for Room ${room.roomNumber} (${room.type}) at Dan's Rentals. Please let me know available times.`);
   const viewingUrl = `https://wa.me/${LANDLORD_PHONE}?text=${viewingMsg}`;
 
   return `
     <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 fade-in">
-      <img src="${room.image}" alt="Room ${room.roomNumber}" class="w-full h-44 object-cover" onerror="this.src='https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'">
       <div class="p-5 space-y-4">
         <!-- Header -->
         <div class="flex items-start justify-between">
           <div>
-            <h3 class="text-xl font-bold text-gray-900">Room ${room.roomNumber}</h3>
+            <h3 class="text-xl font-bold text-gray-900">${formatRoomTitle(room.roomNumber)}</h3>
             <p class="text-sm text-gray-500">${room.type}</p>
           </div>
           <span class="badge badge-${room.status}">${room.status}</span>
@@ -116,10 +115,9 @@ function renderVacantRooms() {
 
   list.innerHTML = vacant.map((room, i) => `
     <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100 flex gap-4 items-center cursor-pointer hover:shadow-md transition fade-in" style="animation-delay:${i*0.08}s" onclick="showVacantDetail('${room.roomNumber}')">
-      <img src="${room.image}" alt="Room ${room.roomNumber}" class="w-16 h-16 rounded-lg object-cover shrink-0" onerror="this.src='https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'">
       <div class="flex-1 min-w-0">
         <div class="flex items-center justify-between">
-          <h4 class="font-bold text-gray-900">Room ${room.roomNumber}</h4>
+          <h4 class="font-bold text-gray-900">${formatRoomTitle(room.roomNumber)}</h4>
           <span class="badge badge-vacant text-[10px]">Vacant</span>
         </div>
         <p class="text-xs text-gray-500">${room.type}</p>
