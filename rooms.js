@@ -3,7 +3,7 @@
 // =============================================
 
 const STORAGE_KEY = 'dans_rentals_rooms'; // Updated key to trigger fresh load
-const LANDLORD_PHONE = '254712345678'; 
+const LANDLORD_PHONE = '254712345678';
 
 const defaultRooms = [
   {
@@ -123,6 +123,85 @@ function loadRooms() {
 
 function saveRooms(rooms) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(rooms));
+}
+
+function loadPayments() {
+  const stored = localStorage.getItem(PAYMENTS_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.warn('Corrupted payments data. Resetting.');
+    }
+  }
+  const mockPayments = generateMockPayments();
+  savePayments(mockPayments);
+  return mockPayments;
+}
+
+function savePayments(payments) {
+  localStorage.setItem(PAYMENTS_KEY, JSON.stringify(payments));
+}
+
+function generateMockPayments() {
+  const names = [
+    "Brian Otieno", "Mercy Wanjiku", "Kevin Kiptoo", "Sarah Naymura", "John Musyoka",
+    "Faith Chebet", "David Ochieng", "Alice Wambui", "Peter Kamau", "Lydia Mutua",
+    "James Mwangi", "Esther Njeri", "Samuel Okoth", "Grace Achieng", "Andrew Kimani",
+    "Catherine Atieno", "Paul Njoroge", "Ruth Nyambura", "Simon Kariuki", "Mary Waweru"
+  ];
+  const units = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const statuses = ["pending", "verified", "rejected"];
+  const months = ["May 2026", "April 2026", "March 2026"];
+
+  const payments = [];
+  const now = new Date();
+
+  for (let i = 0; i < 20; i++) {
+    const status = i < 5 ? "pending" : (i < 15 ? "verified" : "rejected");
+    const unit = units[i % units.length];
+    const room = defaultRooms.find(r => r.roomNumber === unit) || defaultRooms[0];
+
+    payments.push({
+      id: 'PAY-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+      tenantName: names[i],
+      unitNumber: unit,
+      amount: room.rent,
+      phone: '07' + Math.floor(10000000 + Math.random() * 90000000),
+      transactionCode: 'QK' + Math.random().toString(36).substr(2, 8).toUpperCase(),
+      date: new Date(now.getTime() - (Math.random() * 30 * 24 * 60 * 60 * 1000)).toISOString(),
+      status: status,
+      month: months[Math.floor(Math.random() * months.length)],
+      receiptImage: `https://images.unsplash.com/photo-1554224155-1696413565d3?w=400&q=80` // Mock receipt image
+    });
+  }
+  return payments;
+}
+
+function updatePaymentStatus(paymentId, status) {
+  const payments = loadPayments();
+  const index = payments.findIndex(p => p.id === paymentId);
+  if (index !== -1) {
+    payments[index].status = status;
+    payments[index].updatedAt = new Date().toISOString();
+    savePayments(payments);
+    return payments[index];
+  }
+  return null;
+}
+
+function getPaymentStats() {
+  const payments = loadPayments();
+  const currentMonth = "May 2026";
+  const monthlyPayments = payments.filter(p => p.month === currentMonth);
+
+  return {
+    totalCollected: monthlyPayments.filter(p => p.status === 'verified').reduce((sum, p) => sum + p.amount, 0),
+    paidTenants: monthlyPayments.filter(p => p.status === 'verified').length,
+    unpaidTenants: 10 - monthlyPayments.filter(p => p.status === 'verified').length, // Assuming 10 total rooms
+    latePayments: monthlyPayments.filter(p => p.status === 'pending' && new Date(p.date).getDate() > 5).length,
+    pendingVerifications: payments.filter(p => p.status === 'pending').length
+  };
 }
 
 function updateRoom(roomNumber, updates) {
